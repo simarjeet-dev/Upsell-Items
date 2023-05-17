@@ -35,12 +35,17 @@
     ```
     {
       "type": "header",
-      "content": "Upsell Items"
+      "content": "Upsell items"
+    },
+    {
+      "type": "text",
+      "id": "upsell_heading",
+      "label": "Upsell heading"
     },
     {
       "type": "collection",
       "id": "upsell_collection",
-      "label": "Upsell Collection",
+      "label": "Upsell collection",
       "info": "Visible when cart drawer is not empty."
     }
     ```
