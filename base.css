@@ -1,0 +1,31 @@
+/* Custom CSS for cart drawer */
+.quantity {
+  width: calc(11rem / var(--font-body-scale) + var(--inputs-border-width) * 2);
+  min-height: 34px;
+  height: 34px;
+}
+.cart-item__quantity-wrapper {
+  align-items: center;
+}
+.cart-item__name {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 12px;
+}
+.cart-drawer .cart-item__totals {
+  font-weight: 600;
+}
+.totals > h2, .cart__ctas button {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.totals__subtotal-value {
+  font-weight: 600;
+}
+.cart__ctas button {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 18px;
+  color: #e5f0da;
+}
+/* Custom CSS for cart drawer ends here */

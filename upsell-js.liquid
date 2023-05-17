@@ -1,0 +1,141 @@
+<script>
+  let variant;
+  let upsellCount = 0;
+  let upsellArray = [];  // define an array of upsell items
+  
+  // push variant id of upsell collection items in upsellArray
+  {% for product in settings.upsell_collection.products %}
+      variant = {{ product.variants.first.id | json }};
+      upsellArray.push(variant);
+  {% endfor %}
+  // console.log(upsellArray);
+
+  // code snippet to create an updated cart event listener
+  class CartWatcher {
+    init() {
+      this.emitCartChanges().then(() => {
+        this.observeCartChanges();
+      });
+    }
+    async fetchCart() {
+      const response = await fetch('/cart.js');
+      return response.json();
+    }
+    storeCart(cart) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+   storedCart() {
+      return JSON.parse(localStorage.getItem('cart')) || { items: [] };
+    }
+   findCartChanges(oldCart, newCart) {
+      const onlyInLeft = (l, r) => l.filter(li => !r.some(ri => li.key == ri.key));
+      let result = {
+        added: onlyInLeft(newCart.items, oldCart.items),
+        removed: onlyInLeft(oldCart.items, newCart.items),
+      };
+      oldCart.items.forEach(oi => {
+        const ni = newCart.items.find(i => i.key == oi.key && i.quantity != oi.quantity);
+        if (!ni) return;
+        let quantity = ni.quantity - oi.quantity;
+        let item = { ...ni };
+        item.quantity = Math.abs(quantity);
+        quantity > 0
+          ? result.added.push(item)
+          : result.removed.push(item)
+      });
+      return result;
+    }
+    async emitCartChanges() {
+      const newCart = await this.fetchCart();
+      const oldCart = this.storedCart();
+      const changes = this.findCartChanges(oldCart, newCart);
+  
+      const event = new CustomEvent("cart_changed", { detail: changes });
+      window.dispatchEvent(event);
+  
+      const evt = new CustomEvent("cart:updated", { detail: newCart });
+      window.dispatchEvent(evt);
+  
+      this.storeCart(newCart);
+    }
+   observeCartChanges() {
+      const cartObserver = new PerformanceObserver((list) => {
+        list.getEntries().forEach((entry) => {
+          const isValidRequestType = ['xmlhttprequest', 'fetch'].includes(entry.initiatorType);
+          const isCartChangeRequest = /\/cart\//.test(entry.name);
+          if (isValidRequestType && isCartChangeRequest) {
+            this.emitCartChanges();
+          }
+        });
+      });
+      cartObserver.observe({ entryTypes: ["resource"] });
+    }
+  }  
+  const myCartWatcher = new CartWatcher;
+  myCartWatcher.init();
+  // code snippet to create an updated cart event listener ends here
+  
+  // This event listener is triggered when the cart is updated
+  window.addEventListener("cart:updated", e => {
+    // console.log("Cart Data", e.detail);
+    let cart = e.detail;
+    let cartItem = cart.items;
+    let itemsCount = cart.item_count;
+    let cartArray = []; // define an array of cart items
+
+    // Push variant id of cart items in cartArray
+    for (var i = 0; i < cartItem.length; i++) {
+      var item = cartItem[i];
+      if (cartArray.indexOf(item.variant_id) == -1) {
+        cartArray.push(item.variant_id);
+      }
+    }
+    // console.log(cartArray);
+    // Find exact match count in Upsell Array and Cart Array
+    compare = (a1, a2) => upsellArray.reduce((a, c) => a + cartArray.includes(c), 0);
+    upsellCount = compare(upsellArray, cartArray);
+    // console.log("Cart Length:" + cartItem.length + ", Items Count:" + itemsCount + ", Upsell Count:" + upsellCount);
+    
+    //Remove upsell items from the cart if there is no base product
+    if (cartItem.length == upsellCount && upsellCount >= 1) {
+
+      // Shopify section rendering API body
+      {% if template == 'cart' %}
+      document.getElementById("checkout").disabled = true; // disable checkout button
+      let body = JSON.stringify({"sections":["cart-icon-bubble","template--14460086583342__cart-items","template--14460086583342__cart-footer"]});
+      {% else %}
+      document.getElementById("CartDrawer-Checkout").disabled = true;  // disable checkout button
+      let body = JSON.stringify({"sections":["cart-drawer","cart-icon-bubble"]});
+      {% endif %}
+
+      // Shopify AJAX cart clear API
+      fetch('/cart/clear.js', { ...fetchConfig(), ...{ body }})
+        .then((response) => {
+          return response.text();
+        })
+        .then((state) => {
+          const parsedState = JSON.parse(state);
+          // console.log(parsedState);
+          // console.log(parsedState.sections['cart-drawer']);
+
+          // AJAX section rendering API content update
+          {% if template == 'cart' %}
+          document.getElementById('shopify-section-template--14460086583342__cart-items').innerHTML = parsedState.sections['template--14460086583342__cart-items'];
+          document.getElementById('shopify-section-template--14460086583342__cart-footer').innerHTML = parsedState.sections['template--14460086583342__cart-footer'];
+          document.getElementById('cart-icon-bubble').innerHTML = parsedState.sections['cart-icon-bubble'];
+          document.getElementById("checkout").disabled = false; // enable checkout button
+          {% else %}
+          const parser = new DOMParser();
+          const htmlString = parsedState.sections['cart-drawer']; // fetch section HTML content in string form
+          const htmlElement = parser.parseFromString(htmlString, "text/html"); // convert string content to HTML object 
+          const cartDrawer = htmlElement.getElementById('CartDrawer').outerHTML; // convert HTML object to string content by div id
+          
+          document.querySelector('cart-drawer').innerHTML = cartDrawer;
+          document.getElementById('cart-icon-bubble').innerHTML = parsedState.sections['cart-icon-bubble'];
+          document.querySelector('cart-drawer').classList.add('is-empty', 'animate', 'active');
+          document.getElementById("CartDrawer-Checkout").disabled = false; // enable checkout button
+          {% endif %}
+  	  });
+    }
+  });
+</script>

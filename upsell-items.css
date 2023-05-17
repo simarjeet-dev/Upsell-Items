@@ -1,0 +1,105 @@
+.upsell-container h3 {
+  text-align: center;
+  font: 700 18px/38px Mulish;
+  color: #000;
+  text-transform: uppercase;
+  font-size: 15px;
+  font-family: Mulish,sans-serif;
+  margin: 5px 0;
+}
+
+.upsell-container ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.upsell-container li {
+  margin-bottom: 20px;
+}
+
+.upsell-container .upsell-item__single {
+  background-color: #f2f2f2;
+  padding: 15px!important;
+  border-bottom: none!important;
+}
+
+.upsell-item__single {
+  position: relative;
+  -webkit-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+  padding: 10px 0;
+  border-bottom: 1px solid #E6E6E6;
+}
+
+.upsell-item__info-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.upsell-item__image {
+  min-width: 75px;
+  width: 75px;
+  height: 92px;
+  display: block!important;
+  background-color: #eee;
+  background-size: cover;
+  background-position: 50%;
+  background-repeat: no-repeat;
+}
+
+.upsell-item__info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  max-width: 300px;
+  line-height: 1.18;
+  padding: 0 10px 0 20px;
+}
+
+.upsell-item__title {
+  vertical-align: top;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.upsell-container .upsell-item__price {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.upsell-item__price span.upsell-item_compare_at_price {
+  color: #a5a5a5!important;
+  margin: 0 5px!important;
+  text-decoration: line-through;
+}
+
+.upsell-container .upsell-item_discount_perc {
+  margin: 0;
+  background: #69B900 0% 0% no-repeat padding-box;
+  letter-spacing: 0px;
+  color: #fff!important;
+  padding: 5px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.upsell-container .upsell-item-add-to-cart {
+  padding-top: 10px;
+  margin-left: auto;
+}
+
+.upsell-container .upsell-add-to-cart-btn {
+  padding: 0 1rem;
+  min-width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  text-transform: uppercase;
+  width: 70px;
+  height: 40px;
+  min-width: 70px;
+  min-height: 40px;
+  position: relative;
+}

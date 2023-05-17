@@ -1,0 +1,41 @@
+/****************************/
+/* CUSTOM CSS SENSE THEME */
+.drawer__inner{
+  width: 48rem;
+  padding: 0 3rem;
+}
+.cart-items thead {
+  display: none;
+}
+.drawer__header {
+  border-bottom: .1rem solid rgba(var(--color-foreground),.2);
+  padding: 1rem 0;
+}
+.drawer__heading {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+.drawer__close {
+  min-width: 2.2rem;
+  min-height: 2.2rem;
+  right: 0;
+}
+.drawer__close svg {
+  width: 2.2rem;
+  height: 2.2rem;
+}
+.cart-drawer .cart-item {
+  border-bottom: .1rem solid rgba(var(--color-foreground),.2);
+  gap: 0;
+}
+@media only screen and (min-width: 768px) {
+  .cart-drawer__warnings .drawer__close {
+    right: 30px;
+  }
+}  
+@media only screen and (max-width: 767px) {
+  .drawer__inner {
+    padding: 0 1rem;
+  }
+}
