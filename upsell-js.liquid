@@ -99,12 +99,11 @@
     //Remove upsell items from the cart if there is no base product
     if (cartItem.length == upsellCount && upsellCount >= 1) {
 
+      document.getElementsByName("checkout")[0].disabled = true;  // disable checkout button 
       // Shopify section rendering API body
       {% if template == 'cart' %}
-      document.getElementById("checkout").disabled = true; // disable checkout button
-      let body = JSON.stringify({"sections":["cart-icon-bubble","template--14460086583342__cart-items","template--14460086583342__cart-footer"]});
+      let body = JSON.stringify({"sections":["cart-icon-bubble","main-cart-items","main-cart-footer"]});
       {% else %}
-      document.getElementById("CartDrawer-Checkout").disabled = true;  // disable checkout button
       let body = JSON.stringify({"sections":["cart-drawer","cart-icon-bubble"]});
       {% endif %}
 
@@ -120,10 +119,9 @@
 
           // AJAX section rendering API content update
           {% if template == 'cart' %}
-          document.getElementById('shopify-section-template--14460086583342__cart-items').innerHTML = parsedState.sections['template--14460086583342__cart-items'];
-          document.getElementById('shopify-section-template--14460086583342__cart-footer').innerHTML = parsedState.sections['template--14460086583342__cart-footer'];
+          document.getElementsByClassName('cart__items-wrapper')[0].innerHTML = parsedState.sections['main-cart-items'];
+          document.getElementsByClassName('cart__footer-wrapper')[0].innerHTML = parsedState.sections['main-cart-footer'];
           document.getElementById('cart-icon-bubble').innerHTML = parsedState.sections['cart-icon-bubble'];
-          document.getElementById("checkout").disabled = false; // enable checkout button
           {% else %}
           const parser = new DOMParser();
           const htmlString = parsedState.sections['cart-drawer']; // fetch section HTML content in string form
@@ -133,8 +131,8 @@
           document.querySelector('cart-drawer').innerHTML = cartDrawer;
           document.getElementById('cart-icon-bubble').innerHTML = parsedState.sections['cart-icon-bubble'];
           document.querySelector('cart-drawer').classList.add('is-empty', 'animate', 'active');
-          document.getElementById("CartDrawer-Checkout").disabled = false; // enable checkout button
           {% endif %}
+          document.getElementsByName("checkout")[0].disabled = false; // enable checkout button
   	  });
     }
   });
