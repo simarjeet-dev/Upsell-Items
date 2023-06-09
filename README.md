@@ -60,3 +60,19 @@
 17. Replace the class attribute of the `<quantity-input>` element with the following code in both the files and save.
 
     `class="quantity{% if item.product.tags contains 'Upsell Mixed' %} visibility-hidden{% endif %}"`
+    
+18. Go to `main-cart-footer.liquid` and `main-cart-items.liquid` files and then go to section schema code.
+
+19. Add the `class` attribute after the `name` attribute.
+
+    ```
+    "class": "cart__footer-wrapper"
+    "class": "cart__items-wrapper"
+    ```
+    
+20. Then search for `data-id` in the code and replace it with the following.
+
+    ```
+    data-id="main-cart-footer"
+    data-id="main-cart-items"
+    ```
