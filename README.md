@@ -7,7 +7,7 @@
 
 3. Create a new liquid snippet file `upsell-js.liquid` in the snippets directory.
 
-4. Paste the code from the `upsell-js.liquid` file. Replace the sections IDs from the Network tab.
+4. Paste the code from the `upsell-js.liquid` file.
 
 5. Include the `upsell-js.liquid` file in the `<body>` section of your `theme.liquid` file.
 
