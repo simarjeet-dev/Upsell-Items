@@ -69,10 +69,3 @@
     "class": "cart__footer-wrapper"
     "class": "cart__items-wrapper"
     ```
-    
-20. Then search for `data-id` in the code and replace it with the following.
-
-    ```
-    data-id="main-cart-footer"
-    data-id="main-cart-items"
-    ```
