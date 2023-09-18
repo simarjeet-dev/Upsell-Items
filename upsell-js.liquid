@@ -99,12 +99,16 @@
     //Remove upsell items from the cart if there is no base product
     if (cartItem.length == upsellCount && upsellCount >= 1) {
 
-      document.getElementsByName("checkout")[0].disabled = true;  // disable checkout button 
+      document.getElementsByName("checkout")[0].disabled = true;  // disable checkout button
       // Shopify section rendering API body
       {% if template == 'cart' %}
-      let body = JSON.stringify({"sections":["cart-icon-bubble","main-cart-items","main-cart-footer"]});
+      let cart_items_data_id = document.getElementById('main-cart-items').dataset.id;  
+      let cart_footer_data_id = document.getElementById('main-cart-footer').dataset.id;
+      // console.log(cart_items_data_id);
+      // console.log(cart_footer_data_id);   
+      let body = JSON.stringify({"sections":["cart-icon-bubble",cart_items_data_id,cart_footer_data_id]});
       {% else %}
-      let body = JSON.stringify({"sections":["cart-drawer","cart-icon-bubble"]});
+      let body = JSON.stringify({"sections":["mini-cart","cart-icon-bubble"]});
       {% endif %}
 
       // Shopify AJAX cart clear API
@@ -115,24 +119,25 @@
         .then((state) => {
           const parsedState = JSON.parse(state);
           // console.log(parsedState);
-          // console.log(parsedState.sections['cart-drawer']);
+          // console.log(parsedState.sections['mini-cart']);
 
+          document.getElementsByName("checkout")[0].disabled = false; // enable checkout button
           // AJAX section rendering API content update
           {% if template == 'cart' %}
-          document.getElementsByClassName('cart__items-wrapper')[0].innerHTML = parsedState.sections['main-cart-items'];
-          document.getElementsByClassName('cart__footer-wrapper')[0].innerHTML = parsedState.sections['main-cart-footer'];
+          document.getElementsByClassName('cart__items-wrapper')[0].innerHTML = parsedState.sections[cart_items_data_id];
+          document.getElementsByClassName('cart__footer-wrapper')[0].innerHTML = parsedState.sections[cart_footer_data_id];
+          // document.getElementById('shopify-section-template--14531229581358__cart-footer').innerHTML = parsedState.sections['template--14531229581358__cart-footer'];
           document.getElementById('cart-icon-bubble').innerHTML = parsedState.sections['cart-icon-bubble'];
           {% else %}
           const parser = new DOMParser();
-          const htmlString = parsedState.sections['cart-drawer']; // fetch section HTML content in string form
+          const htmlString = parsedState.sections['mini-cart']; // fetch section HTML content in string form
           const htmlElement = parser.parseFromString(htmlString, "text/html"); // convert string content to HTML object 
-          const cartDrawer = htmlElement.getElementById('CartDrawer').outerHTML; // convert HTML object to string content by div id
+          const cartDrawer = htmlElement.getElementsByClassName('mini-cart__inner')[0].outerHTML; // convert HTML object to string content by div id
           
-          document.querySelector('cart-drawer').innerHTML = cartDrawer;
+          document.getElementsByClassName('mini-cart')[0].innerHTML = cartDrawer;
           document.getElementById('cart-icon-bubble').innerHTML = parsedState.sections['cart-icon-bubble'];
-          document.querySelector('cart-drawer').classList.add('is-empty', 'animate', 'active');
+          document.getElementsByClassName('mini-cart')[0].classList.add('is-empty');
           {% endif %}
-          document.getElementsByName("checkout")[0].disabled = false; // enable checkout button
   	  });
     }
   });
